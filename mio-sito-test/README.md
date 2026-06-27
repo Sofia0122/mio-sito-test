@@ -1,75 +1,50 @@
-# React + TypeScript + Vite
+# Harbourly Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Harbourly is a mobile-first React frontend for marina concierge services. It supports public service requests, request tracking and an admin workspace using mock data today and REST/AWS-ready repositories tomorrow.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+React, TypeScript strict mode, Vite, React Router, Tailwind CSS, React Hook Form, Zod, TanStack Query, Recharts and Lucide React.
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Copy `.env.example` when API integration starts. Mock repositories are used by default.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Structure
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+`src/app` owns app bootstrap, routes and providers. `src/pages` contains thin route components. `src/features` contains business UI, hooks, services, repository contracts and repository implementations. `src/components` contains reusable UI and layout primitives. `src/mocks` contains temporary data only. `src/lib` contains shared infrastructure such as `apiClient`, query client and repository factory.
 
+## Data Flow
+
+```text
+Page
+-> feature component
+-> feature hook
+-> feature service
+-> repository
+-> apiClient
 ```
+
+Mock and HTTP repositories implement the same feature repository interface. Switch `VITE_REPOSITORY_MODE=http` later to wire HTTP repositories through the centralized factory in `src/lib/repositories.ts`.
+
+## Routing
+
+Public routes: `/`, `/services`, `/request/:serviceSlug`, `/request-confirmation/:reference`, `/track/:reference`.
+
+Admin routes: `/admin`, `/admin/requests`, `/admin/requests/:requestId`, `/admin/suppliers`, `/admin/services`, `/admin/analytics`.
+
+`AdminRouteGuard` is a placeholder for future authentication and authorization.
+
+## Figma MCP
+
+Do not use Figma MCP until a frame or Figma link is provided. When available, use it as the source of truth for tokens, spacing, typography, components and responsive behavior.
+
+## Backend Integration
+
+Replace mock behavior by completing the HTTP repositories and setting `VITE_API_BASE_URL`. Pages, components, forms and hooks should not need rewrites.
