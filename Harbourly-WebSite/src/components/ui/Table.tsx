@@ -13,7 +13,7 @@ export function Table<TItem>({ columns, data, getRowKey }: TableProps<TItem>) {
         <thead className="bg-[#f4f8f8] text-xs uppercase tracking-wide text-[#607177]">
           <tr>
             {columns.map((column) => (
-              <th className="px-4 py-3 font-semibold" key={column.key}>
+              <th className="px-4 py-3 font-semibold" key={column.key} scope="col">
                 {column.header}
               </th>
             ))}

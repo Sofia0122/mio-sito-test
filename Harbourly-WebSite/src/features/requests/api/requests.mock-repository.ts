@@ -4,25 +4,27 @@ import { portsMock } from '../../../mocks/ports.mock'
 import type { RequestsRepository } from './requests.repository'
 import type { CreateRequestInput, Request } from '../types/requests.types'
 
+const requestsStore: Request[] = [...requestsMock]
+
 export class RequestsMockRepository implements RequestsRepository {
   async listRequests() {
-    return [...requestsMock]
+    return [...requestsStore]
   }
 
   async getRequestById(requestId: string) {
-    return requestsMock.find((request) => request.id === requestId) ?? null
+    return requestsStore.find((request) => request.id === requestId) ?? null
   }
 
   async getRequestByReference(reference: string) {
-    return requestsMock.find((request) => request.reference === reference) ?? null
+    return requestsStore.find((request) => request.reference === reference) ?? null
   }
 
   async createRequest(input: CreateRequestInput): Promise<Request> {
     const category = servicesMock.find((service) => service.slug === input.serviceSlug)
     const port = portsMock.find((item) => item.id === input.portId)
-    const reference = `HB-${new Date().getFullYear()}-${String(requestsMock.length + 1).padStart(3, '0')}`
+    const reference = `HB-${new Date().getFullYear()}-${String(requestsStore.length + 1).padStart(3, '0')}`
 
-    return {
+    const request: Request = {
       id: `req-${crypto.randomUUID()}`,
       reference,
       customerName: input.customerName,
@@ -47,5 +49,8 @@ export class RequestsMockRepository implements RequestsRepository {
         },
       ],
     }
+
+    requestsStore.unshift(request)
+    return request
   }
 }
